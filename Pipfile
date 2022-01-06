@@ -1,0 +1,24 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+pre-commit = "*"
+sqlalchemy = "*"
+python-dotenv = "*"
+databases = {version = "==0.4.2", extras = ["postgresql"]}
+alembic = "*"
+uvicorn = "*"
+fastapi-users = {extras = ["sqlalchemy"], version = "*"}
+nltk = "*"
+fastapi-sqlalchemy = "*"
+psycopg2-binary = "*"
+fastapi-redis-session = "*"
+faker = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"

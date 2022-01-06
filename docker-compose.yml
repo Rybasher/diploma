@@ -1,0 +1,36 @@
+version: '3.6'
+services:
+  postgres:
+    image: postgis/postgis:latest
+    restart: always
+    user: root
+    env_file:
+      - database.env
+    volumes:
+      - /data/diplom/postgis:/var/lib/postgis/data
+    ports:
+      - 5432:5432
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: "unless-stopped"
+    user: root
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'admin'
+      PGADMIN_DEFAULT_PASSWORD: 'admin'
+      PGADMIN_LISTEN_PORT: 5050
+    volumes:
+    - /data/diplom/pgadmin:/var/lib/pgadmin
+    ports:
+    - "5050:5050"
+  redis:
+    image: "redis:alpine"
+    restart: always
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgis:
+    driver: local
+  redis_data:
