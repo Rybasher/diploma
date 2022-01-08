@@ -60,7 +60,7 @@ async def get_text_by_id(text_id: str, crud: CRUDText = Depends(get_text_crud_de
 
 
 @router.get("/referencing/get_referencing_result/{text_id}", response_model=ReferencingResponse)
-async def get_referencing_result(text_id: str, alliances: bool, crud: CRUDText = Depends(get_text_crud_dependency),
+async def get_referencing_result(text_id: str, crud: CRUDText = Depends(get_text_crud_dependency),
                                  db: Session = Depends(get_db)) -> JSONResponse:
     text = await crud.get(db=db, id=text_id)
     ref_instance = Referencing(text)
