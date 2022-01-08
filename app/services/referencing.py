@@ -52,6 +52,3 @@ class Referencing:
             text_water=f"{str(100 - text_water)}%",
             new_text=".".join(res)
         )
-
-
-

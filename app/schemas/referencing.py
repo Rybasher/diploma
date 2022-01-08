@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 
 from pydantic import BaseModel
 
@@ -22,8 +22,8 @@ class TextInfoResponse(BaseModel):
 
 
 class ReferencingResponse(TextInfoResponse):
-    hot_words: Dict[str, int]
-    text_water: str
-    new_text: str
+    hot_words: Optional[Dict[str, int]] = None
+    text_water: Optional[str] = None
+    new_text: Optional[str] = None
 
 

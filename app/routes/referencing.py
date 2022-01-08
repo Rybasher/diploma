@@ -1,4 +1,7 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, status, UploadFile, File
+from pydantic import BaseModel
 
 from app.crud.text_base import CRUDText
 from app.dependencies.crud_dependency import get_text_crud_dependency, get_tex_info_crud_dependency
@@ -8,6 +11,7 @@ from app.database.session import get_db
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from app.utils.exceptions import TextNotFound
+from app.utils.utils import row2dict
 
 router = APIRouter(tags=["referencing"])
 
@@ -26,7 +30,6 @@ async def get_text_info(text_id: str, crud_text: CRUDText = Depends(get_text_cru
     reference_instance = Referencing(text)
     result = await reference_instance.get_text_info()
     await crud_info.add_info_to_text_instance(db=db, obj_in=result, text_id=int(text_id))
-
     return JSONResponse(status_code=status.HTTP_200_OK, content={
         "symbols": result.symbols,
         "symbols_without_whitespaces": result.symbols_w_w,
@@ -61,8 +64,17 @@ async def get_text_by_id(text_id: str, crud: CRUDText = Depends(get_text_crud_de
 
 @router.get("/referencing/get_referencing_result/{text_id}", response_model=ReferencingResponse)
 async def get_referencing_result(text_id: str, crud: CRUDText = Depends(get_text_crud_dependency),
+                                 crud_info: CRUDText = Depends(get_tex_info_crud_dependency),
                                  db: Session = Depends(get_db)) -> JSONResponse:
     text = await crud.get(db=db, id=text_id)
     ref_instance = Referencing(text)
     result = await ref_instance.referencing_text()
+    await crud_info.add_info_to_text_instance(db=db, obj_in=result, text_id=int(text_id))
     return JSONResponse(status_code=status.HTTP_200_OK, content=result.dict())
+
+
+@router.get("/referencing/list_of_referencing", response_model=List[ReferencingResponse])
+async def get_list_of_referencing(skip: int = 0, limit: int = 10,
+                                  crud_info: CRUDText = Depends(get_tex_info_crud_dependency),
+                                  db: Session = Depends(get_db)) -> List[BaseModel]:
+    return await row2dict(ReferencingResponse, await crud_info.get_multi(db, skip=skip, limit=limit))
