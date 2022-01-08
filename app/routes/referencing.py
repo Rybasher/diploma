@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status, UploadFile, File
 
 from app.crud.text_base import CRUDText
 from app.dependencies.crud_dependency import get_text_crud_dependency, get_tex_info_crud_dependency
-from app.schemas.referencing import TextModel, TextInfoResponse, TextCreateResponse
+from app.schemas.referencing import TextModel, TextInfoResponse, TextCreateResponse, ReferencingResponse
 from app.services.referencing import Referencing
 from app.database.session import get_db
 from fastapi.responses import JSONResponse
@@ -37,14 +37,14 @@ async def get_text_info(text_id: str, crud_text: CRUDText = Depends(get_text_cru
     })
 
 
-@router.post("/referencing/add_text/", response_model=TextCreateResponse, status_code=201)
+@router.post("/referencing/add_text/", response_model=TextCreateResponse)
 async def add_text(text_example: TextModel, crud: CRUDText = Depends(get_text_crud_dependency),
                    db: Session = Depends(get_db)) -> JSONResponse:
     result = await crud.create(db=db, obj_in=text_example)
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={"id": result.id, "text": result.your_text})
 
 
-@router.post("/referencing/add_text/file/", response_model=TextCreateResponse, status_code=201)
+@router.post("/referencing/add_text/file/", response_model=TextCreateResponse)
 async def add_text_from_file(file: UploadFile = File(...), crud: CRUDText = Depends(get_text_crud_dependency),
                              db: Session = Depends(get_db)):
     content = await file.read()
@@ -52,13 +52,17 @@ async def add_text_from_file(file: UploadFile = File(...), crud: CRUDText = Depe
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={"id": result.id, "text": result.your_text})
 
 
-@router.get("/referencing/get_text/{text_id}", response_model=TextCreateResponse, status_code=200)
+@router.get("/referencing/get_text/{text_id}", response_model=TextCreateResponse)
 async def get_text_by_id(text_id: str, crud: CRUDText = Depends(get_text_crud_dependency),
                          db: Session = Depends(get_db)) -> JSONResponse:
     result = await crud.get(db=db, id=text_id)
     return JSONResponse(status_code=status.HTTP_200_OK, content={"id": result.id, "text": result.your_text})
 
 
-
-
-
+@router.get("/referencing/get_referencing_result/{text_id}", response_model=ReferencingResponse)
+async def get_referencing_result(text_id: str, alliances: bool, crud: CRUDText = Depends(get_text_crud_dependency),
+                                 db: Session = Depends(get_db)) -> JSONResponse:
+    text = await crud.get(db=db, id=text_id)
+    ref_instance = Referencing(text)
+    result = await ref_instance.referencing_text()
+    return JSONResponse(status_code=status.HTTP_200_OK, content=result.dict())

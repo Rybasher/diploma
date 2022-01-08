@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 fastapi = "*"
 pre-commit = "*"
+asyncpg = "*"
 sqlalchemy = "*"
 python-dotenv = "*"
 databases = {version = "==0.4.2", extras = ["postgresql"]}
