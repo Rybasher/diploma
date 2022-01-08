@@ -15,8 +15,8 @@ services:
     restart: "unless-stopped"
     user: root
     environment:
-      PGADMIN_DEFAULT_EMAIL: 'admin'
-      PGADMIN_DEFAULT_PASSWORD: 'admin'
+      PGADMIN_DEFAULT_EMAIL: 'admin@gmail.com'
+      PGADMIN_DEFAULT_PASSWORD: 'admin1'
       PGADMIN_LISTEN_PORT: 5050
     volumes:
     - /data/diplom/pgadmin:/var/lib/pgadmin

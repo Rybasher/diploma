@@ -1,3 +1,5 @@
+from typing import Dict, Optional
+
 from pydantic import BaseModel
 
 
@@ -17,3 +19,11 @@ class TextInfoResponse(BaseModel):
     sentences_count: int
     hot_word: str
     hot_word_count: int
+
+
+class ReferencingResponse(TextInfoResponse):
+    hot_words: Optional[Dict[str, int]] = None
+    text_water: Optional[str] = None
+    new_text: Optional[str] = None
+
+
