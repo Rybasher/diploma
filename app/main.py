@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import referencing, auth, test
+from app.routes import referencing, auth, test, nlp
 from app.core import config, tasks
 from app.database.session import engine
 from app.database.db import Base
@@ -32,3 +32,4 @@ app = get_application()
 app.include_router(referencing.router)
 app.include_router(auth.router)
 app.include_router(test.router)
+app.include_router(nlp.router)
